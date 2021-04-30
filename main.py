@@ -23,15 +23,9 @@ class DataSpider(QWidget):
         self.edit_site_link = QLineEdit(self)
         self.edit_site_link.move(150, 20)
 
-        # Color Processing
-        self.color_processing = QCheckBox('Color processing', self)
-        self.color_processing.move(20, 100)
-        self.color_processing.toggle()
-        self.color_processing.stateChanged.connect(self.Color)
-
         # Normalization
         self.normalization = QCheckBox('Normalization', self)
-        self.normalization.move(140, 100)
+        self.normalization.move(20, 100)
         self.normalization.toggle()
         self.normalization.stateChanged.connect(self.Normalization)
 
@@ -80,8 +74,7 @@ class DataSpider(QWidget):
 
     def start(self):
         import parser_kurs as pk
-        self.status.setText('Download...' + '\n Errors: 0' + '\n Success: 0')
-        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), 1, 1, self.stop_value.value())
+        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), self.normalization.checkState(), self.stop_value.value())
         if result:
             self.status.setText('Done!' + '\n Errors:' + str(errors) + '\n Success:' + str(success))
 
@@ -93,3 +86,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     gui = DataSpider()
     sys.exit(app.exec_())
+
+# https://macrosvit.com.ua/impressionizm/collections-43480/
+# D:/Dataset/Impr

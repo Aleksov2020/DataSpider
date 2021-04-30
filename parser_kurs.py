@@ -4,19 +4,17 @@ import requests
 import time
 
 
-def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop_value):
+def parsing(patch_to_data, patch_to_files, normalization, stop_value):
     errors = 0
     success = 0
     url = patch_to_data
     content = str(urllib2.urlopen(url).read())
     imgUrls = re.findall('img .*?src="(.*?)"', content)
     for i in range(len(imgUrls)):
-        print(imgUrls[i])
         if imgUrls[i][0] == '/':
             imgUrls[i] = patch_to_data + imgUrls[i]
     k = 0
     for img in imgUrls:
-        print(img)
         k += 1
         try:
             p = requests.get(img)
@@ -35,7 +33,7 @@ def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop
 
     if normalization:
         from resize import resize_all_images
-        resize_all_images(patch_to_data, success-errors)
+        resize_all_images(patch_to_files, success-errors)
 
     return 1, errors, success
 

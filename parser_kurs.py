@@ -35,7 +35,7 @@ def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop
 
     if normalization:
         from resize import resize_all_images
-        resize_all_images()
+        resize_all_images(patch_to_data, success-errors)
 
     return 1, errors, success
 

@@ -32,4 +32,10 @@ def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop
             time.sleep(3)
         if k > stop_value:
             break
+
+    if normalization:
+        from resize import resize_all_images
+        resize_all_images()
+
     return 1, errors, success
+

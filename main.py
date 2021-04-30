@@ -58,6 +58,9 @@ class DataSpider(QWidget):
         self.btn.move(115, 255)
         self.btn.clicked.connect(self.start)
 
+        # Progress Bar
+        self.status = QLabel('Starting' + '\n Errors: 0' + '\n Success: 0', self)
+        self.status.move(20, 220)
 
         self.setGeometry(500, 400, 300, 300)
         self.setWindowTitle('Data Spider')
@@ -77,11 +80,10 @@ class DataSpider(QWidget):
 
     def start(self):
         import parser_kurs as pk
-        print(self.edit_site_link.text())
-        print(self.edit_patch_to_save.text())
-        result = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), 1, 1, self.stop_value.value())
+        self.status.setText('Download...' + '\n Errors: 0' + '\n Success: 0')
+        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), 1, 1, self.stop_value.value())
         if result:
-            self.setWindowTitle('OK')
+            self.status.setText('Done!' + '\n Errors:' + str(errors) + '\n Success:' + str(success))
 
     def slider_change(self):
         self.img_value.setText(str(self.stop_value.value()))

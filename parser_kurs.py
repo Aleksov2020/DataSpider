@@ -3,7 +3,10 @@ import urllib.request as urllib2
 import requests
 import time
 
+
 def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop_value):
+    errors = 0
+    success = 0
     url = patch_to_data
     content = str(urllib2.urlopen(url).read())
     imgUrls = re.findall('img .*?src="(.*?)"', content)
@@ -17,10 +20,11 @@ def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop
         k += 1
         try:
             p = requests.get(img)
-        except ConnectionError:
-            continue
         except:
+            errors += 1
             continue
+        else:
+            success += 1
         out = open(patch_to_files + '/img' + str(k) + '.jpg', 'wb')
         out.write(p.content)
         out.close()
@@ -28,4 +32,4 @@ def parsing(patch_to_data, patch_to_files, color_processing, normalization, stop
             time.sleep(3)
         if k > stop_value:
             break
-    return 1
+    return 1, errors, success

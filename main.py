@@ -5,7 +5,7 @@ import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QPushButton, QCheckBox, QLineEdit,
-                             QApplication, QLabel)
+                             QApplication, QLabel, QSlider)
 
 
 class DataSpider(QWidget):
@@ -42,13 +42,24 @@ class DataSpider(QWidget):
         self.edit_patch_to_save = QLineEdit(self)
         self.edit_patch_to_save.move(150, 60)
 
+        # Slider
+        self.img_value = QLabel('Количество картин: ', self)
+        self.img_value.move(20, 140)
+
+        self.stop_value = QSlider(Qt.Horizontal, self)
+        self.stop_value.setGeometry(20, 160, 200, 30)
+        self.stop_value.valueChanged[int].connect(self.slider_change)
+
+        self.img_value = QLabel('00', self)
+        self.img_value.move(120, 200)
+
         # Button
         self.btn = QPushButton('Start', self)
-        self.btn.move(115, 155)
+        self.btn.move(115, 255)
         self.btn.clicked.connect(self.start)
 
 
-        self.setGeometry(500, 400, 300, 200)
+        self.setGeometry(500, 400, 300, 300)
         self.setWindowTitle('Data Spider')
         self.show()
 
@@ -68,8 +79,13 @@ class DataSpider(QWidget):
         import parser_kurs as pk
         print(self.edit_site_link.text())
         print(self.edit_patch_to_save.text())
-        pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), 1, 1)
-        return
+        result = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), 1, 1, self.stop_value.value())
+        if result:
+            self.setWindowTitle('OK')
+
+    def slider_change(self):
+        self.img_value.setText(str(self.stop_value.value()))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

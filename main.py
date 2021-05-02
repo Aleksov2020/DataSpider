@@ -27,7 +27,27 @@ class DataSpider(QWidget):
         self.normalization = QCheckBox('Normalization', self)
         self.normalization.move(20, 100)
         self.normalization.toggle()
-        self.normalization.stateChanged.connect(self.Normalization)
+
+        # Patch to Save
+        self.patch_to_save = QLabel('Enter patch to save data:', self)
+        self.patch_to_save.move(20, 62)
+
+        self.edit_patch_to_save = QLineEdit(self)
+        self.edit_patch_to_save.move(150, 60)
+
+        # Width
+        self.width = QLabel('Width:', self)
+        self.width.move(20, 140)
+
+        self.edit_width = QLineEdit(self)
+        self.edit_width.move(150, 140)
+
+        # Height
+        self.height= QLabel('Height:', self)
+        self.height.move(20, 180)
+
+        self.edit_height = QLineEdit(self)
+        self.edit_height.move(150, 180)
 
         # Patch to Save
         self.patch_to_save = QLabel('Enter patch to save data:', self)
@@ -37,26 +57,26 @@ class DataSpider(QWidget):
         self.edit_patch_to_save.move(150, 60)
 
         # Slider
-        self.img_value = QLabel('Количество картин: ', self)
-        self.img_value.move(20, 140)
+        self.img_value = QLabel('Count of pictures: ', self)
+        self.img_value.move(20, 215)
 
         self.stop_value = QSlider(Qt.Horizontal, self)
-        self.stop_value.setGeometry(20, 160, 200, 30)
+        self.stop_value.setGeometry(20, 240, 200, 30)
         self.stop_value.valueChanged[int].connect(self.slider_change)
 
         self.img_value = QLabel('00', self)
-        self.img_value.move(120, 200)
+        self.img_value.move(120, 215)
 
         # Button
         self.btn = QPushButton('Start', self)
-        self.btn.move(115, 255)
+        self.btn.move(115, 340)
         self.btn.clicked.connect(self.start)
 
         # Progress Bar
         self.status = QLabel('Starting' + '\n Errors: 0' + '\n Success: 0', self)
-        self.status.move(20, 220)
+        self.status.move(20, 280)
 
-        self.setGeometry(500, 400, 300, 300)
+        self.setGeometry(500, 400, 300, 400)
         self.setWindowTitle('Data Spider')
         self.show()
 
@@ -66,15 +86,11 @@ class DataSpider(QWidget):
         else:
             self.setWindowTitle('UnChecked')
 
-    def Normalization(self, state):
-        if state == Qt.Checked:
-            self.setWindowTitle('Norma')
-        else:
-            self.setWindowTitle('UnNorma')
-
     def start(self):
         import parser_kurs as pk
-        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(), self.normalization.checkState(), self.stop_value.value())
+        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(),
+                                             self.normalization.checkState(), self.stop_value.value(),
+                                             self.edit_width.text(), self.edit_height.text())
         if result:
             self.status.setText('Done!' + '\n Errors:' + str(errors) + '\n Success:' + str(success))
 

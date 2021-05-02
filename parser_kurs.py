@@ -4,7 +4,7 @@ import requests
 import time
 
 
-def parsing(patch_to_data, patch_to_files, normalization, stop_value):
+def parsing(patch_to_data, patch_to_files, normalization, stop_value, width, height):
     errors = 0
     success = 0
     url = patch_to_data
@@ -33,7 +33,7 @@ def parsing(patch_to_data, patch_to_files, normalization, stop_value):
 
     if normalization:
         from resize import resize_all_images
-        resize_all_images(patch_to_files, success-errors)
+        resize_all_images(patch_to_files, success-errors, width, height)
 
     return 1, errors, success
 

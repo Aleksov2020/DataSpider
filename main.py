@@ -12,10 +12,22 @@ class DataSpider(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.status = None
+        self.btn_start = None
+        self.img_value = None
+        self.stop_value = None
+        self.edit_patch_to_save = None
+        self.patch_to_save = None
+        self.edit_image_height = None
+        self.image_height = None
+        self.edit_image_width = None
+        self.image_width = None
+        self.need_normalization = None
+        self.edit_site_link = None
+        self.site_link = None
+        self.init_ui()
 
-        self.initUI()
-
-    def initUI(self):
+    def init_ui(self):
         # Site link
         self.site_link = QLabel('Enter site link:', self)
         self.site_link.move(20, 22)
@@ -23,10 +35,10 @@ class DataSpider(QWidget):
         self.edit_site_link = QLineEdit(self)
         self.edit_site_link.move(150, 20)
 
-        # Normalization
-        self.normalization = QCheckBox('Normalization', self)
-        self.normalization.move(20, 100)
-        self.normalization.toggle()
+        # User need to normalize images ?
+        self.need_normalization = QCheckBox('Normalization', self)
+        self.need_normalization.move(20, 100)
+        self.need_normalization.toggle()
 
         # Patch to Save
         self.patch_to_save = QLabel('Enter patch to save data:', self)
@@ -35,19 +47,19 @@ class DataSpider(QWidget):
         self.edit_patch_to_save = QLineEdit(self)
         self.edit_patch_to_save.move(150, 60)
 
-        # Width
-        self.width = QLabel('Width:', self)
-        self.width.move(20, 140)
+        # Image width
+        self.image_width = QLabel('Width:', self)
+        self.image_width.move(20, 140)
 
-        self.edit_width = QLineEdit(self)
-        self.edit_width.move(150, 140)
+        self.edit_image_width = QLineEdit(self)
+        self.edit_image_width.move(150, 140)
 
-        # Height
-        self.height= QLabel('Height:', self)
-        self.height.move(20, 180)
+        # Image Height
+        self.image_height = QLabel('Height:', self)
+        self.image_height.move(20, 180)
 
-        self.edit_height = QLineEdit(self)
-        self.edit_height.move(150, 180)
+        self.edit_image_height = QLineEdit(self)
+        self.edit_image_height.move(150, 180)
 
         # Patch to Save
         self.patch_to_save = QLabel('Enter patch to save data:', self)
@@ -65,22 +77,22 @@ class DataSpider(QWidget):
         self.stop_value.valueChanged[int].connect(self.slider_change)
 
         self.img_value = QLabel('00', self)
-        self.img_value.move(120, 215)
+        self.img_value.move(150, 215)
 
         # Button
-        self.btn = QPushButton('Start', self)
-        self.btn.move(115, 340)
-        self.btn.clicked.connect(self.start)
+        self.btn_start = QPushButton('Start', self)
+        self.btn_start.move(115, 340)
+        self.btn_start.clicked.connect(self.start)
 
         # Progress Bar
-        self.status = QLabel('Starting' + '\n Errors: 0' + '\n Success: 0', self)
+        self.status = QLabel('Information' + '\nErrors: 0' + '\nSuccess: 0', self)
         self.status.move(20, 280)
 
         self.setGeometry(500, 400, 300, 400)
         self.setWindowTitle('Data Spider')
         self.show()
 
-    def Color(self, state):
+    def color(self, state):
         if state == Qt.Checked:
             self.setWindowTitle('Checked')
         else:
@@ -88,11 +100,15 @@ class DataSpider(QWidget):
 
     def start(self):
         import parser_kurs as pk
-        result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(),
-                                             self.normalization.checkState(), self.stop_value.value(),
-                                             self.edit_width.text(), self.edit_height.text())
-        if result:
-            self.status.setText('Done!' + '\n Errors:' + str(errors) + '\n Success:' + str(success))
+        print(self.edit_site_link.text())
+        try:
+            result, errors, success = pk.parsing(self.edit_site_link.text(), self.edit_patch_to_save.text(),
+                                                 self.need_normalization.checkState(), self.stop_value.value(),
+                                                 self.edit_image_width.text(), self.edit_image_height.text())
+            if result:
+                self.status.setText('Done!' + '\n Errors:' + str(errors) + '\n Success:' + str(success))
+        except:
+            self.status.setText('Input error')
 
     def slider_change(self):
         self.img_value.setText(str(self.stop_value.value()))
